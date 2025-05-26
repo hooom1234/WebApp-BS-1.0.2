@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from '@env';
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Dimensions, Modal, TextInput } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import AdminStudentButton from "./button/AdminReporter";
 import { useStudent } from "../reporter/component/StudentContext";
 import axios from "axios";
@@ -17,30 +18,60 @@ const AdminStudent = ({ route, navigation }) => {
   const [reporters, setReporters] = useState([]);
 
 
+const fetchStudents = () => {
+  axios
+    .get(`${API_URL}Admin-System/ReporterManage/Reporterlist.php`)
+    .then((response) => {
+      const data = response.data;
 
+      if (Array.isArray(data)) {
+        setReporters(data);
+      } else if (Array.isArray(data.reporters)) {
+        setReporters(data.reporters);
+      } else {
+        setReporters([]);
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+};
+
+useFocusEffect(
+  useCallback(() => {
+    fetchStudents(); // โหลดข้อมูลใหม่ทุกครั้งเมื่อหน้าโฟกัส
+
+    return () => {
+      // optional: cleanup ถ้าต้องการ
+    };
+  }, [])
+);
  
 
-  useEffect(() => {
-    axios
-      .get(`${API_URL}Admin-System/ReporterManage/Reporterlist.php`)
-      .then((response) => {
-        const data = response.data;
+  // useEffect(() => {
+  //   axios
+  //     .get(`${API_URL}Admin-System/ReporterManage/Reporterlist.php`)
+  //     .then((response) => {
+  //       const data = response.data;
   
-        if (Array.isArray(data)) {
-          setReporters(data); // case where API returns array directly
-        } else if (Array.isArray(data.reporters)) {
-          setReporters(data.reporters); // case where API wraps in { reporters: [...] }
-        } else {
-          setReporters([]); // fallback to empty
-        }
+  //       if (Array.isArray(data)) {
+  //         setReporters(data); // case where API returns array directly
+  //       } else if (Array.isArray(data.reporters)) {
+  //         setReporters(data.reporters); // case where API wraps in { reporters: [...] }
+  //       } else {
+  //         setReporters([]); // fallback to empty
+  //       }
   
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //     });
+  // }, []);
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
@@ -89,6 +120,7 @@ const AdminStudent = ({ route, navigation }) => {
                 if (json.success) {
                   Alert.alert("สำเร็จ", "ลบข้อมูลสำเร็จ");
                   setData(data.filter((item) => item.id !== id));
+                  fetchStudents();
                 } else {
                   Alert.alert("ล้มเหลว", "ไม่สามารถลบข้อมูลได้");
                 }

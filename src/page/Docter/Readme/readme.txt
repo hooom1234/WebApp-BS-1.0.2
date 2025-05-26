@@ -1,0 +1,1 @@
+// Docter ที่มีสิทธิ์การเข้าถึงข้อมูลมากกว่าผู้ปกครอง โดยไม่ได้มีการ send request ไปยัง admin (All Same Parent but more than POWER) 

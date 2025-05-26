@@ -12,10 +12,10 @@ import {
   TextInput,
 } from "react-native";
 
-import AdminStudentButton from "./button/AdminReporter";
+import AdminStudentButton from "./button/student-Button";
 
 const { width, height } = Dimensions.get("window");
-
+import { API_URL } from '@env';
 const AddStudent = ({ navigation }) => {
   const [Id, setId] = useState("");
   const [Fname, setFname] = useState("");
@@ -25,41 +25,53 @@ const AddStudent = ({ navigation }) => {
 
 
 
-  const handleAddReporter = () => {
-    if (!Id || !Password) {
-      Alert.alert("คำเตือน", "กรุณากรอกข้อมูลให้ครบ");
-      return;
-    }
+ const handleAddReporter = () => {
+  if (!Id || !Password) {
+    Alert.alert("คำเตือน", "กรุณากรอกข้อมูลให้ครบ");
+    return;
+  }
 
-    setLoading(true);
-    fetch("http://52.221.184.135/API/Admin-System/StudentManage/StudentAdd.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: Id,
-        fname: Fname,
-        lname: Lname,
-        pass: Password,
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
+  setLoading(true);
+
+  fetch(`${API_URL}/Admin-System/StudentManage/StudentAdd.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: Id,
+      fname: Fname,
+      lname: Lname,
+      pass: Password,
+    }),
+  })
+    .then(async (response) => {
+      const text = await response.text(); // รับ raw response text
+      console.log("Raw Response:", text); // log เพื่อตรวจสอบ error
+
+      try {
+        const json = JSON.parse(text); // พยายามแปลงเป็น JSON
         setLoading(false);
+
         if (json.status === "success") {
           Alert.alert("สำเร็จ", "เพิ่มผู้รายงานเรียบร้อยแล้ว");
           navigation.goBack();
         } else {
           Alert.alert("ผิดพลาด", json.message || "ไม่สามารถเพิ่มข้อมูลได้");
         }
-      })
-      .catch((error) => {
+      } catch (err) {
         setLoading(false);
-        console.error("Error creating reporter: ", error);
-        Alert.alert("ผิดพลาด", "เกิดข้อผิดพลาดระหว่างการเพิ่มข้อมูล");
-      });
-  };
+        console.error("JSON Parse Error:", err);
+        Alert.alert("ผิดพลาด", "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์:\n" + text);
+      }
+    })
+    .catch((error) => {
+      setLoading(false);
+      console.error("Error creating reporter: ", error);
+      Alert.alert("ผิดพลาด", "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+    });
+};
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -75,31 +87,26 @@ const AddStudent = ({ navigation }) => {
         </View>
 
         <View style={styles.buttonContainer}>
-        <Text style={styles.inputLabel}>รหัสประจำตัวผู้ใช้</Text>
+          <Text style={styles.inputLabel}>เลขประจำตัว</Text>
           <TextInput
             style={styles.inputField}
-            placeholder="รหัสประจำตัวผู้ใช้"
+            placeholder="เลขประจำตัว"
             value={Id}
             onChangeText={setId}
           />
-
           <Text style={styles.inputLabel}>ชื่อ</Text>
           <TextInput
             style={styles.inputField}
             placeholder="ชื่อ"
             value={Fname}
             onChangeText={setFname}
-          />
-
-<Text style={styles.inputLabel}>นามสกุล</Text>
+          />          <Text style={styles.inputLabel}>นามสกุล</Text>
           <TextInput
             style={styles.inputField}
             placeholder="นามสกุล"
             value={Lname}
             onChangeText={setLname}
           />
-
-
           <Text style={styles.inputLabel}>รหัสผ่าน</Text>
           <TextInput
             style={styles.inputField}
@@ -113,7 +120,7 @@ const AddStudent = ({ navigation }) => {
             {loading ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={styles.loginButtonText}>เพิ่มผู้รายงาน</Text>
+              <Text style={styles.loginButtonText}>เพิ่มผู้นักเรียน</Text>
             )}
           </TouchableOpacity>
         </View>

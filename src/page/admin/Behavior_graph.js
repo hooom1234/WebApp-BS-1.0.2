@@ -69,13 +69,6 @@ const Behavior_graph = ({ route, navigation }) => {
     fetchData();
   }, [id]);
 
-  if (!fontsLoaded || loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
 
   const chartData = {
     labels: data.map((item) => `${item.date}\n${item.time}`),

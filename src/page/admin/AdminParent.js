@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from '@env';
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Dimensions, Modal, TextInput } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import AdminStudentButton from "./button/AdminParent";
 import { useStudent } from "../reporter/component/StudentContext";
 import axios from "axios";
-import AdminAdminButton from "./button/AdminAdmin";
+import AdminAdminButton from "./button/AdminParent";
 
 const { width, height } = Dimensions.get('window');
 
@@ -18,30 +19,60 @@ const AdminParent = ({ route, navigation }) => {
   const [reporters, setParents] = useState([]);
 
 
+const fetchStudents = () => {
+  axios
+    .get(`${API_URL}Admin-System/ParentManage/Parentlist.php`)
+    .then((response) => {
+      const data = response.data;
 
+      if (Array.isArray(data)) {
+        setParents(data);
+      } else if (Array.isArray(data.reporters)) {
+        setParents(data.reporters);
+      } else {
+        setParents([]);
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+};
+
+useFocusEffect(
+  useCallback(() => {
+    fetchStudents(); // โหลดข้อมูลใหม่ทุกครั้งเมื่อหน้าโฟกัส
+
+    return () => {
+      // optional: cleanup ถ้าต้องการ
+    };
+  }, [])
+);
  
 
-  useEffect(() => {
-    axios
-      .get(`${API_URL}Admin-System/ParentManage/Parentlist.php`)
-      .then((response) => {
-        const data = response.data;
+  // useEffect(() => {
+  //   axios
+  //     .get(`${API_URL}Admin-System/ParentManage/Parentlist.php`)
+  //     .then((response) => {
+  //       const data = response.data;
   
-        if (Array.isArray(data)) {
-          setParents(data); // case where API returns array directly
-        } else if (Array.isArray(data.reporters)) {
-          setParents(data.reporters); // case where API wraps in { reporters: [...] }
-        } else {
-          setParents([]); // fallback to empty
-        }
+  //       if (Array.isArray(data)) {
+  //         setParents(data); // case where API returns array directly
+  //       } else if (Array.isArray(data.reporters)) {
+  //         setParents(data.reporters); // case where API wraps in { reporters: [...] }
+  //       } else {
+  //         setParents([]); // fallback to empty
+  //       }
   
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //     });
+  // }, []);
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
@@ -90,6 +121,7 @@ const AdminParent = ({ route, navigation }) => {
                 if (json.success) {
                   Alert.alert("สำเร็จ", "ลบข้อมูลสำเร็จ");
                   setData(data.filter((item) => item.id !== id));
+                  fetchStudents();
                 } else {
                   Alert.alert("ล้มเหลว", "ไม่สามารถลบข้อมูลได้");
                 }

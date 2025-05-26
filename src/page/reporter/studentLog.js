@@ -65,7 +65,7 @@ const StudentLog = ({ route, navigation }) => {
         <View style={styles.header}>
 
           <Text style={styles.headerText}>
-            รายชื่อนักเรียน
+            กรอกรหัสผ่านยืนยัน
           </Text>
 
         </View>

@@ -3,10 +3,11 @@ import { API_URL } from '@env';
 import { View, Text, TextInput, Button, Alert, ActivityIndicator, TouchableOpacity,
   SafeAreaView, ScrollView, Image, StyleSheet, Dimensions } from "react-native";
 import { useParent } from "./component/ParentContext"; // ✅ Import useParent
-
+import { Platform, PermissionsAndroid} from 'react-native';
 import HistoryButton from "./button/history-Button-std";
 import StudentButton from "./button/student-Button";
 import MessageButton from "./button/message-Button";
+import Share from 'react-native-share';
 import axios from "axios";
 import RNHTMLtoPDF from 'react-native-html-to-pdf';  // ✅ Import PDF library
 import FileViewer from 'react-native-file-viewer';  // ✅ Import File Viewer for opening PDF
@@ -42,34 +43,108 @@ const StudentHistory = ({ route, navigation }) => {
 
   const generatePDF = async () => {
     try {
-      const historyItems = history.map(item => `
-        <p><strong>Time:</strong> ${item.time}</p>
-        <p><strong>Level:</strong> ${item.level}</p>
-        <p><strong>Type:</strong> ${item.type}</p>
-        <p><strong>Detail:</strong> ${item.detail}</p>
+      // สร้างเนื้อหาของพฤติกรรม
+      const behaviorItems = history.map(item => `
+        <p><strong>ประทับเวลา:</strong> ${item.time}</p>
+        <p><strong>ระดับความรุนแรง:</strong> ${item.level}</p>
+        <p><strong>ประเภท:</strong> ${item.type}</p>
+        <p><strong>รายละเอียดเหตุการณ์:</strong> ${item.detail}</p>
         <hr />
       `).join('');
-
+  
+      // สร้างเนื้อหาหัวข้อและข้อมูลอื่น ๆ
       const htmlContent = `
-        <h1>Student History: ${fname} ${lname}</h1>
-        ${historyItems}
+        <html>
+          <head>
+            <style>
+              @page {
+                margin: 1cm;
+              }
+              body {
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                margin: 0;
+                padding: 0;
+              }
+              h1 {
+                text-align: center;
+                font-size: 16px;
+                margin-top: 30px;
+              }
+              h2 {
+                text-align: center;
+                font-size: 14px;
+                margin-top: 10px;
+              }
+              .content {
+                margin-left: 1.5cm;
+                margin-right: 2.5cm;
+                margin-top: 0.5cm;
+              }
+              .history-item {
+                margin-bottom: 5px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>ผลการสังเกตุการณ์พฤติกรรม</h1>
+            <h2>นักเรียน: ${fname} ${lname} และผู้ปกครอง : ${parentId}</h2>
+            <div class="content">
+              ${behaviorItems}
+            </div>
+          </body>
+        </html>
       `;
-
+  
+      // สร้าง PDF ด้วยเนื้อหาที่กำหนด
       const options = {
         html: htmlContent,
         fileName: `student-history-${fname}-${lname}`,
-        directory: 'Documents',
+        directory: 'Download', // จะบันทึกในโฟลเดอร์ Download
       };
-
+  
       const file = await RNHTMLtoPDF.convert(options);
-
-      // เปิดไฟล์ PDF
-      await FileViewer.open(file.filePath);
+      const filePath = file.filePath.startsWith('file://') ? file.filePath : `file://${file.filePath}`;
+  
+      // แจ้งเตือนเมื่อ PDF สร้างเสร็จแล้ว
+      Alert.alert(
+        'สำเร็จ',
+        `ไฟล์ PDF ถูกบันทึกไว้ที่:\n${file.filePath}\n\nคุณต้องการเปิดไฟล์หรือไม่?`,
+        [
+          { text: 'ไม่เปิด', style: 'cancel' },
+          {
+            text: 'เปิดไฟล์',
+            onPress: async () => {
+              try {
+                if (Platform.OS === 'android') {
+                  const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+                  );
+                  if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                    Alert.alert("Permission Denied", "Cannot open file without permission.");
+                    return;
+                  }
+                }
+                await FileViewer.open(filePath);
+              } catch (err) {
+                console.error("Error opening file:", err);
+                Alert.alert('ผิดพลาด', 'ไม่สามารถเปิดไฟล์ได้ (อาจไม่มีแอป PDF)');
+              }
+            }
+          }
+        ]
+      );
+  
     } catch (err) {
-      console.error(err);
-      Alert.alert('เกิดข้อผิดพลาด', 'ไม่สามารถสร้างหรือเปิด PDF ได้');
+      console.error("PDF generation error:", err);
+      Alert.alert('เกิดข้อผิดพลาด', 'ไม่สามารถสร้าง PDF ได้');
     }
   };
+
+  
+  
+  
+  
 
   if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
 
@@ -129,9 +204,9 @@ const StudentHistory = ({ route, navigation }) => {
             <Text>ไม่มีข้อมูลพฤติกรรม</Text>
           )}
           {/* ปุ่มสำหรับ export PDF */}
-          <TouchableOpacity style={styles.selectButton} onPress={generatePDF}>
+          {/* <TouchableOpacity style={styles.selectButton} onPress={generatePDF}>
             <Text style={styles.selectButtonText}>Export as PDF</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
       </ScrollView>

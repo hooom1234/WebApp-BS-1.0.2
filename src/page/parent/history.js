@@ -197,8 +197,10 @@ const styles = StyleSheet.create({
     textAlign: "left", // ทำให้ชื่อแสดงทางซ้าย
   },
   buttonGroup: {
-    flexDirection: "row",
-    gap: 10,
+    flexDirection: "column",
+    gap: height * 0.02,
+    alignItems: "center",
+    paddingLeft: width * 0.05
     
   },
   actionButton: {

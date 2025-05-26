@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import { API_URL } from '@env';
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Dimensions, Modal, TextInput } from "react-native";
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
+
 import AdminStudentButton from "./button/student-Button";
 import { useStudent } from "../reporter/component/StudentContext";
 import axios from "axios";
@@ -20,31 +24,42 @@ const AdminReporter = ({ route, navigation }) => {
 
  
 
-  useEffect(() => {
-    axios
-      .get(`${API_URL}studentlist.php`)
-      .then((response) => {
-        const data = response.data;
-  
-        if (Array.isArray(data)) {
-          setStudents(data); // case where API returns array directly
-        } else if (Array.isArray(data.students)) {
-          setStudents(data.students); // case where API wraps in { students: [...] }
-        } else {
-          setStudents([]); // fallback to empty
-        }
-  
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
+const fetchStudents = () => {
+  axios
+    .get(`${API_URL}studentlist.php`)
+    .then((response) => {
+      const data = response.data;
+
+      if (Array.isArray(data)) {
+        setStudents(data);
+      } else if (Array.isArray(data.students)) {
+        setStudents(data.students);
+      } else {
+        setStudents([]);
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+};
+
+useFocusEffect(
+  useCallback(() => {
+    fetchStudents(); // โหลดข้อมูลใหม่ทุกครั้งเมื่อหน้าโฟกัส
+
+    return () => {
+      // optional: cleanup ถ้าต้องการ
+    };
+  }, [])
+);
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
     fetch(`http://52.221.184.135/API/Admin-System/StudentUpdate.php?id=${id}`, {
+    
       method: 'GET',
     })
     .then((response) => response.json())
@@ -90,6 +105,7 @@ const AdminReporter = ({ route, navigation }) => {
                 if (json.success) {
                   Alert.alert("สำเร็จ", "ลบข้อมูลสำเร็จ");
                   setData(data.filter((item) => item.id !== id));
+                  fetchStudents();
                 } else {
                   Alert.alert("ล้มเหลว", "ไม่สามารถลบข้อมูลได้");
                 }

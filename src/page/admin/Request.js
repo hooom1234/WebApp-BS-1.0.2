@@ -76,6 +76,9 @@ const Request = ({ route, navigation }) => {
                 <Text style={styles.detail}>👤 ผู้ใช้: {item.student}</Text>
                 <Text style={styles.detail}>👪 ผู้ปกครอง: {item.parent}</Text>
                 <Text style={styles.detail}>📌 สถานะ: {item.status}</Text>
+                <Text style={styles.detail}>🕓 เวลา: {item.datetime}</Text>
+                <Text style={styles.detail}>📅 วันที่เหลือ: {item.days_remaining}</Text>
+
 
                 <View style={styles.buttonRow}>
   <TouchableOpacity

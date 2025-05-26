@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from '@env';
 import { View, Text, TouchableOpacity, Alert, ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Dimensions, Modal, TextInput } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import AdminStudentButton from "./button/AdminParent";
 import { useStudent } from "../reporter/component/StudentContext";
 import axios from "axios";
 import AdminAdminButton from "./button/AdminAdmin";
+import { useAdmin } from "./component/AdminContext";
 
 const { width, height } = Dimensions.get('window');
 
 const AdminAdmin = ({ route, navigation }) => {
+  const { adminId } = useAdmin();
   const { setStudentId } = useStudent();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,30 +21,60 @@ const AdminAdmin = ({ route, navigation }) => {
   const [reporters, setParents] = useState([]);
 
 
+const fetchStudents = () => {
+  axios
+    .get(`${API_URL}Admin-System/AdminManage/Adminlist.php`)
+    .then((response) => {
+      const data = response.data;
 
+      if (Array.isArray(data)) {
+        setParents(data);
+      } else if (Array.isArray(data.reporters)) {
+        setParents(data.reporters);
+      } else {
+        setParents([]);
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    });
+};
+
+useFocusEffect(
+  useCallback(() => {
+    fetchStudents(); // โหลดข้อมูลใหม่ทุกครั้งเมื่อหน้าโฟกัส
+
+    return () => {
+      // optional: cleanup ถ้าต้องการ
+    };
+  }, [])
+);
  
 
-  useEffect(() => {
-    axios
-      .get(`${API_URL}Admin-System/AdminManage/Adminlist.php`)
-      .then((response) => {
-        const data = response.data;
+  // useEffect(() => {
+  //   axios
+  //     .get(`${API_URL}Admin-System/AdminManage/Adminlist.php`)
+  //     .then((response) => {
+  //       const data = response.data;
   
-        if (Array.isArray(data)) {
-          setParents(data); // case where API returns array directly
-        } else if (Array.isArray(data.reporters)) {
-          setParents(data.reporters); // case where API wraps in { reporters: [...] }
-        } else {
-          setParents([]); // fallback to empty
-        }
+  //       if (Array.isArray(data)) {
+  //         setParents(data); // case where API returns array directly
+  //       } else if (Array.isArray(data.reporters)) {
+  //         setParents(data.reporters); // case where API wraps in { reporters: [...] }
+  //       } else {
+  //         setParents([]); // fallback to empty
+  //       }
   
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      });
-  }, []);
+  //       setLoading(false);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching data:", error);
+  //       setLoading(false);
+  //     });
+  // }, []);
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
@@ -90,6 +123,7 @@ const AdminAdmin = ({ route, navigation }) => {
                 if (json.success) {
                   Alert.alert("สำเร็จ", "ลบข้อมูลสำเร็จ");
                   setData(data.filter((item) => item.id !== id));
+                  fetchStudents(); 
                 } else {
                   Alert.alert("ล้มเหลว", "ไม่สามารถลบข้อมูลได้");
                 }
@@ -135,32 +169,36 @@ const AdminAdmin = ({ route, navigation }) => {
         <View style={styles.buttonContainer}>
           <View style={styles.studentContainer}>
             
-          {Array.isArray(reporters) &&
-          reporters.map((item, index) => {
-              const isEven = index % 2 === 0;
-              return (
-                <View key={item.id} style={[styles.studentItem, { backgroundColor: isEven ? "#AABBFF" : "#F9D776" }]}>
-                  <Text style={styles.studentText}>{item.fname} {item.lname} : {item.id}</Text>
+{Array.isArray(reporters) &&
+  reporters.map((item, index) => {
+    const isEven = index % 2 === 0;
+    const isCurrentUser = item.id === adminId; // เช็คว่าเป็นตัวเองไหม
 
-                  <View style={styles.buttonRow}>
+    return (
+      <View key={item.id} style={[styles.studentItem, { backgroundColor: isEven ? "#AABBFF" : "#F9D776" }]}>
+        <Text style={styles.studentText}>{item.fname} {item.lname} : {item.id}</Text>
 
-                    <TouchableOpacity
-                      style={[styles.selectButton, { backgroundColor: isEven ? "#FFDD00" : "#FFDD00" }]}
-                      onPress={() => Edit_Select(item.id)}
-                    >
-                      <Text style={styles.selectButtonText}>Edit</Text>
-                    </TouchableOpacity>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.selectButton, { backgroundColor: "#FFDD00" }]}
+            onPress={() => Edit_Select(item.id)}
+          >
+            <Text style={styles.selectButtonText}>Edit</Text>
+          </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={[styles.selectButton, { backgroundColor: isEven ? "#FF0000" : "#FF0000" }]}
-                      onPress={() => deleteStudent(item.id)} // เรียกฟังก์ชันลบ
-                    >
-                      <Text style={styles.selectButtonText}>Delete</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              );
-            })}
+          {!isCurrentUser && ( // ซ่อนปุ่ม Delete ถ้าเป็นตัวเอง
+            <TouchableOpacity
+              style={[styles.selectButton, { backgroundColor: "#FF0000" }]}
+              onPress={() => deleteStudent(item.id)}
+            >
+              <Text style={styles.selectButtonText}>Delete</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    );
+  })}
+
           </View>
         </View>
       </ScrollView>

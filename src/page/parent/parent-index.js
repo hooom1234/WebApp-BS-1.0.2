@@ -43,7 +43,7 @@ const ParentIndex = ({  navigation }) => {
         <View style={styles.header}>
 
           <Text style={styles.headerText}>
-            Parent HomePage
+            หน้าหลัก
           </Text>
 
         </View>
@@ -54,7 +54,7 @@ const ParentIndex = ({  navigation }) => {
     <View style={styles.buttonContainer}>
 		
     <StudentButton navigation={navigation} />
-    <MessageButton navigation={navigation} />
+
     </View>
 
             

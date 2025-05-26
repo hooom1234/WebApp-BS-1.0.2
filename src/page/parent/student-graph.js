@@ -200,8 +200,8 @@ const chartData = {
       ) : (
         <Text style={{ textAlign: "center" }}>ไม่มีข้อมูล</Text>
       )}
-      <Text style={{ textAlign: "center", marginTop: 10,color:"white",fontFamily: "Kanit-Bold" }}>วันเวลา (แกน X)    |    ระดับความรุนแรง (แกน y)</Text>
-      
+      <Text style={{ textAlign: "center", marginTop: 10,color:"white",fontFamily: "Kanit-Bold" }}>วันเวลา (แกน X)</Text>
+      <Text style={{ textAlign: "center", marginTop: 10,color:"white",fontFamily: "Kanit-Bold" }}>ระดับความรุนแรง (แกน y)</Text>
     </View>
          
         </View>

@@ -71,13 +71,9 @@ const UpdateStudent = ({ route, navigation }) => {
         <View style={styles.buttonContainer}>
 
           <Text style={styles.inputLabel}>รหัสประจำตัวผู้ใช้</Text>
+
+          <Text style={styles.inputField2}>{Id}</Text>
           
-          <TextInput
-            style={styles.inputField}
-            placeholder="ไอดี"
-            value={Id}
-            onChangeText={setId}
-          />
 
           <Text style={styles.inputLabel}>ชื่อ</Text>
           <TextInput
@@ -137,7 +133,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 15,
     fontSize: 16,
-    color: "#333",
+    color: '#333',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 1,
+    shadowRadius: 5,
+    elevation: 15,
+  },
+    inputField2: {
+    width: "80%",
+    padding: 15,
+    borderRadius: 25,
+    backgroundColor: "#fff",
+    marginBottom: 15,
+    fontSize: 16,
+    color: "gray",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 1,
