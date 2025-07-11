@@ -97,6 +97,73 @@ To learn more about React Native, take a look at the following resources:
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 
 
+# Getting Started for Linux Dummies
+
+## 1: Get Stuff
+
+You'll need:
+
+- a computer with a decent amount of virtual memory/RAM. (> 4 gigabytes)
+- a bunch of storage. (over 20 GB free, don't forget for some coffee)
+- an **Android** phone with plenty of disk space, or else you'll waste 30-ish minutes knowing there's no place left to fit the application.
+- a lot of patience.
+
+## 2: Load With Applications and Tools
+
+Install:
+
+- Android Studio and its tools, Platform tools and Build tools (**EXACTLY** at version 35.0.0, just for this project)
+- Java (Development Kit) version 17
+- [Node.js](https://nodejs.org/en/download)
+
+## 3: Set It Up
+
+- Clone this repository to your disk that you're COMPLETELY SURE that it's over 10GB free.
+- Initialize React Native **VERSION 0.79.2** by running this in the repository folder.
+```sh
+npm install react native@0.79.2
+```
+- Start Metro.
+```sh
+npm start
+```
+
+## 3.5: Set Up Your Phone
+
+- Open settings.
+- Go to device details
+- Enter the development mode, tap the build number 7 times.
+- Go back to the settings menu, you'll see "Developer options". Tap on it.
+- Turn on USB debugging.
+- Plug your phone into your computer, you'll be asked on your phone to "trust" your computer. Check "always" and accept.
+- **CHECK connectivity** by looking at the devices tab, you'll see the name and the Android version.
+
+## 4: Build!
+
+**NOTE** that this procedure consumes a lot of memory! Free up some before building.
+
+- Open another terminal at the repository folder.
+- Run this:
+```sh
+npm run android
+#OR
+npx react-native run-android
+```
+- And patience!
+
+## 5: Run It for Real
+
+- The application will appear on your phone, or as an APK at (Repo)/android/app/build/outputs/apk/debug/.
+
+## CONSIDER
+
+A lot of disk space will be consumed:
+
+- One at ~/.gradle, contains cache files required for building. can't be moved, but symlinking will do.
+- Another at your Android SDK placement, SDK Tools are placed there. Can be moved in Android Studio settings.
+- And, of course, the cloned repository, can expand by a heavy load once built. Place it anywhere as your heart desires.
+
+
 HOW TO INSTALL
 
 Framework needed !
