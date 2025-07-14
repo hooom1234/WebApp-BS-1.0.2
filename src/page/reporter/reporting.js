@@ -10,7 +10,7 @@ import { API_URL } from '@env';
 
 const { width, height } = Dimensions.get('window');
 
-const API_URL2 = `${API_URL}save_student.php`; // ✅ เปลี่ยนเป็น IP ของเครื่อง XAMPP
+const API_URL2 = `${API_URL}/save_student.php`; // ✅ เปลี่ยนเป็น IP ของเครื่อง XAMPP
 
 const submitStudentData = async (id, type, level, detail, time, reporter) => {
   try {

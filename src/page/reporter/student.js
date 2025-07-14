@@ -19,7 +19,7 @@ const StudentList = ({ navigation }) => {
 
 
   useEffect(() => {
-    fetch(`${API_URL}studentlist.php`)
+    fetch(`${API_URL}/studentlist.php`)
       .then((response) => response.json())
       .then((json) => {
         setData(json);

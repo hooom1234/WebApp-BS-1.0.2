@@ -30,7 +30,7 @@ const AddAdmin = ({ navigation }) => {
     }
 
     setLoading(true);
-    fetch(`${API_URL}Admin-System/AdminManage/AdminAdd.php`, {
+    fetch(`${API_URL}/Admin-System/AdminManage/AdminAdd.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

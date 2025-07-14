@@ -30,7 +30,7 @@ const AddParent = ({ navigation }) => {
     }
 
     setLoading(true);
-    fetch(`${API_URL}Admin-System/ParentManage/ParentAdd.php`, {
+    fetch(`${API_URL}/Admin-System/ParentManage/ParentAdd.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

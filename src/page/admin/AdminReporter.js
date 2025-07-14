@@ -20,7 +20,7 @@ const AdminStudent = ({ route, navigation }) => {
 
 const fetchStudents = () => {
   axios
-    .get(`${API_URL}Admin-System/ReporterManage/Reporterlist.php`)
+    .get(`${API_URL}/Admin-System/ReporterManage/Reporterlist.php`)
     .then((response) => {
       const data = response.data;
 
@@ -53,7 +53,7 @@ useFocusEffect(
 
   // useEffect(() => {
   //   axios
-  //     .get(`${API_URL}Admin-System/ReporterManage/Reporterlist.php`)
+  //     .get(`${API_URL}/Admin-System/ReporterManage/Reporterlist.php`)
   //     .then((response) => {
   //       const data = response.data;
   
@@ -75,7 +75,7 @@ useFocusEffect(
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
-    fetch(`http://52.221.184.135/API/Admin-System/ReporterManage/ReporterUpdate.php?id=${id}`, {
+    fetch(`${API_URL}/Admin-System/ReporterManage/ReporterUpdate.php?id=${id}`, {
       method: 'GET',
     })
     .then((response) => response.json())
@@ -112,7 +112,7 @@ useFocusEffect(
         {
           text: "ยืนยัน",
           onPress: () => {
-            fetch(`http://52.221.184.135/API/Admin-System/ReporterManage/ReporterDelete.php?id=${id}`, {
+            fetch(`${API_URL}/Admin-System/ReporterManage/ReporterDelete.php?id=${id}`, {
               method: 'DELETE',
             })
               .then((response) => response.json())

@@ -36,10 +36,10 @@ const LoginScreen = ({ navigation }) => {
     }, 3000);
 
     try {
-      const response = await axios.post(`${API_URL}Login-System/login-Reporter.php`, { id: userId, password });
+      const response = await axios.post(`${API_URL}/Login-System/login-Reporter.php`, { id: userId, password });
 
       if (response.data.status === "success") {
-        // เรียกใช้แอนิเมชันเมื่อเข้าสู่ระบบสำเร็จ
+        // เรียกใช้แอนิเมชันเมื่อเข้าสู่ระบบสำเร็
         setShowAlert(true);
         Animated.timing(fadeAnim, {
           toValue: 1,

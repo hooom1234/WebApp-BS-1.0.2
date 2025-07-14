@@ -26,7 +26,7 @@ const StudentHistory = ({ route, navigation }) => {
     if (!parentId || !studentId) return;
 
     axios
-      .get(`http://52.221.184.135/API/Parent-System/student-history.php?parent=${parentId}&student=${studentId}`)
+      .get(`${API_URL}/Parent-System/student-history.php?parent=${parentId}&student=${studentId}`)
       .then((response) => {
         if (!response.data || response.data.error) { // แก้ไขการตรวจสอบ error
           setAccessDenied(true);

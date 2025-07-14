@@ -35,7 +35,7 @@ const ParentLoginScreen = ({ navigation }) => {
     }, 3000);
 
     try {
-      const response = await axios.post(`${API_URL}Login-System/login-Parent.php`, { id: parentId, password });
+      const response = await axios.post(`${API_URL}/Login-System/login-Parent.php`, { id: parentId, password });
 
       if (response.data.status === "success") {
         // เรียกใช้แอนิเมชันเมื่อเข้าสู่ระบบสำเร็จ

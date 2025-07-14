@@ -33,7 +33,7 @@ const Behavior_graph = ({ route, navigation }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://52.221.184.135/API/Admin-System/Behavior_his.php?student=${id}`
+          `${API_URL}/Admin-System/Behavior_his.php?student=${id}`
         );
 
         if (!response.data || response.data.error) {

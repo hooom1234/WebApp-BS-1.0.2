@@ -26,7 +26,7 @@ const AdminReporter = ({ route, navigation }) => {
 
 const fetchStudents = () => {
   axios
-    .get(`${API_URL}studentlist.php`)
+    .get(`${API_URL}/studentlist.php`)
     .then((response) => {
       const data = response.data;
 
@@ -58,7 +58,7 @@ useFocusEffect(
    //DON"T FORGOT CREATE EDIT ONLY ADMIB SESSION (By concept "NOT EVERRY ACC CAN MANAGE USERS (Broken Ascess Control)") *IMPORTANT!!!!*
   
   const Edit_Select = (id) => {
-    fetch(`http://52.221.184.135/API/Admin-System/StudentUpdate.php?id=${id}`, {
+    fetch(`${API_URL}/Admin-System/StudentUpdate.php?id=${id}`, {
     
       method: 'GET',
     })
@@ -97,7 +97,7 @@ useFocusEffect(
         {
           text: "ยืนยัน",
           onPress: () => {
-            fetch(`http://52.221.184.135/API/delete_student.php?id=${id}`, {
+            fetch(`${API_URL}/delete_student.php?id=${id}`, {
               method: 'DELETE',
             })
               .then((response) => response.json())

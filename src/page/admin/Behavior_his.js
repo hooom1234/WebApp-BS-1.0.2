@@ -33,7 +33,7 @@ console.log("Id =", Id);
 useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get(`http://52.221.184.135/API/Admin-System/Behavior_his.php?student=${Id}`);
+        const response = await axios.get(`${API_URL}/Admin-System/Behavior_his.php?student=${Id}`);
         setHistory(response.data);
       } catch (error) {
         console.error("Error fetching history:", error);

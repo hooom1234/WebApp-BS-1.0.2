@@ -27,15 +27,14 @@ const AdminLoginScreen = ({ navigation }) => {
     }
 
     setLoading(true);
-    setIsButtonDisabled(true); // ปิดการกดปุ่ม login
-
-    // ตั้งเวลาคูลดาวน์ 3 วินาที
+    setIsButtonDisabled(true); 
+ 
     setTimeout(() => {
-      setIsButtonDisabled(false); // เปิดการกดปุ่มหลังจาก 3 วินาที
+      setIsButtonDisabled(false); 
     }, 3000);
 
     try {
-      const response = await axios.post(`${API_URL}Login-System/login-Admin.php`, { id: adminId, password });
+      const response = await axios.post(`${API_URL}/Login-System/login-Admin.php`, { id: adminId, password });
 
       if (response.data.status === "success") {
         setShowAlert(true);
@@ -47,16 +46,16 @@ const AdminLoginScreen = ({ navigation }) => {
 
         setAdminId(response.data.id);
         setTimeout(() => {
-          navigation.replace("AdminIndex"); // ✅ เอาหน้าลงตรงนี้
+          navigation.replace("AdminIndex");
         }, 750);
       } else {
-        setModalMessage(response.data.message || "ID หรือ Password ไม่ถูกต้อง"); // แจ้งเตือนกรณีใส่ข้อมูลผิด
-        setModalVisible(true); // เปิด modal แสดงข้อมูลผิด
+        setModalMessage(response.data.message || "ID หรือ Password ไม่ถูกต้อง"); 
+        setModalVisible(true); 
       }
     } catch (error) {
       console.error("Login Error:", error);
       setModalMessage("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์");
-      setModalVisible(true); // เปิด modal เมื่อเกิดข้อผิดพลาด
+      setModalVisible(true); 
     } finally {
       setLoading(false);
     }

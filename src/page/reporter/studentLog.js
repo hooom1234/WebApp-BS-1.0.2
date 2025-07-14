@@ -23,7 +23,7 @@ const StudentLog = ({ route, navigation }) => {
     }
 
     try {
-      const response = await fetch(`${API_URL}check_password.php`, {
+      const response = await fetch(`${API_URL}/check_password.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ studentId, password }),
