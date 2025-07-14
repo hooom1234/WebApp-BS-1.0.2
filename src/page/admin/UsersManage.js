@@ -30,7 +30,7 @@ const Request = ({ route, navigation }) => {
 
   const fetchRequest = async () => {
     try {
-      const response = await axios.get(`http://52.221.184.135/API/Admin-System/RequestList.php`);
+      const response = await axios.get(`${API_URL}/Admin-System/RequestList.php`);
       setRequests(response.data);
     } catch (error) {
       console.error("Error fetching Request:", error);
@@ -42,7 +42,7 @@ const Request = ({ route, navigation }) => {
 
   const handleUpdateStatus = async (student, newstatus) => {
     try {
-      const response = await axios.patch(`${API_URL}Admin-System/Request.php`, {
+      const response = await axios.patch(`${API_URL}/Admin-System/Request.php`, {
         student: student,
         status: newstatus
       });

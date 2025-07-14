@@ -27,7 +27,7 @@ const UpdateAdmin = ({ route, navigation }) => {
 
     const Edit_Update = () => {
         setLoading(true);
-        fetch(`http://52.221.184.135/API/Admin-System/AdminManage/AdminUpdate.php?id=${id}`, {
+        fetch(`${API_URL}/Admin-System/AdminManage/AdminUpdate.php?id=${id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

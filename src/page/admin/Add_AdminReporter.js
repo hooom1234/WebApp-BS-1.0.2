@@ -30,7 +30,7 @@ const AddReporter = ({ navigation }) => {
     }
 
     setLoading(true);
-    fetch(`${API_URL}Admin-System/ReporterManage/ReporterAdd.php`, {
+    fetch(`${API_URL}/Admin-System/ReporterManage/ReporterAdd.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

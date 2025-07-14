@@ -33,7 +33,7 @@ const AddStudent = ({ navigation }) => {
 
   setLoading(true);
 
-  fetch(`${API_URL}/Admin-System/StudentManage/StudentAdd.php`, {
+  fetch(`${API_URL}//Admin-System/StudentManage/StudentAdd.php`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

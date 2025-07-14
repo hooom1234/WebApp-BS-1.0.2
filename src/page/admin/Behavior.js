@@ -28,7 +28,7 @@ const Behavior = ({ route, navigation }) => {
 //     if (!parentId) return;
 
 //     axios
-//       .get(`http://52.221.184.135/API/Parent-System/studentlist-history.php?parent=${parentId}`)
+//       .get(`${API_URL}/Parent-System/studentlist-history.php?parent=${parentId}`)
 //       .then((response) => {
 //         console.log("API Response:", response.data);
 //         setStudents(response.data.students || []);
@@ -43,7 +43,7 @@ const Behavior = ({ route, navigation }) => {
 
 //   const requestAccess = async (studentId) => {
 //     try {
-//       const response = await axios.post(`${API_URL}Parent-System/request-access.php`, {
+//       const response = await axios.post(`${API_URL}/Parent-System/request-access.php`, {
 //         parent: parentId,
 //         student: studentId,
 //       });

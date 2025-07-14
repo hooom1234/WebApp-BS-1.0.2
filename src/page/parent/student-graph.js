@@ -42,7 +42,7 @@ const StudentHistory = ({ route, navigation }) => {
       try {
         // ดึงข้อมูลกราฟ
         const graphResponse = await axios.get(
-          `http://52.221.184.135/API/Parent-System/student-graph.php?parent=${parentId}&student=${studentId}`
+          `${API_URL}/Parent-System/student-graph.php?parent=${parentId}&student=${studentId}`
         );
   
         if (!graphResponse.data || graphResponse.data.error) {
@@ -67,7 +67,7 @@ const StudentHistory = ({ route, navigation }) => {
   
         // ดึงข้อมูลประวัติ
         const historyResponse = await axios.get(
-          `http://52.221.184.135/API/Parent-System/student-history.php?parent=${parentId}&student=${studentId}`
+          `${API_URL}/Parent-System/student-history.php?parent=${parentId}&student=${studentId}`
         );
   
         if (!historyResponse.data || historyResponse.data.error) {
