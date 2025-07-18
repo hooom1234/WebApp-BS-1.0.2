@@ -3,43 +3,42 @@ import { API_URL } from '@env';
 import { View, Text, TextInput, ActivityIndicator, 
   Modal, TouchableOpacity, StyleSheet, Image, 
   SafeAreaView, Dimensions, 
-  StatusBar, ScrollView, Alert, Animated } from "react-native"; // เพิ่ม Animated
+  StatusBar, ScrollView, Alert, Animated } from "react-native"; 
 import axios from "axios";
-import { useUser } from "./component/UserContext"; // ✅ ใช้ useUser() อย่างถูกต้อง
+import { useUser } from "./component/UserContext";
 import ReporterButton from "./button/reporter-Button";
 
 const { width, height } = Dimensions.get('window');
 const LoginScreen = ({ navigation }) => {
-  const { userId, setUserId } = useUser(); // ✅ ใช้ useUser() อย่างถูกต้อง
+  const { userId, setUserId } = useUser();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false); // การเปิด/ปิด modal
+  const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  const [showAlert, setShowAlert] = useState(false); // สถานะการแสดง Alert
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // สถานะของปุ่ม Login
-  const fadeAnim = useState(new Animated.Value(0))[0]; // สำหรับแอนิเมชัน
+  const [showAlert, setShowAlert] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
   
 
   const handleLogin = async () => {
     if (!userId || !password) {
       setModalMessage("กรุณากรอก Username หรือ Password");
-      setModalVisible(true); // เปิด modal หากข้อมูลไม่ครบ
+      setModalVisible(true);
       return;
     }
 
     setLoading(true);
-    setIsButtonDisabled(true); // ปิดการกดปุ่ม login
+    setIsButtonDisabled(true);
 
-    // ตั้งเวลาคูลดาวน์ 3 วินาที
     setTimeout(() => {
-      setIsButtonDisabled(false); // เปิดการกดปุ่มหลังจาก 3 วินาที
+      setIsButtonDisabled(false);
     }, 3000);
 
     try {
       const response = await axios.post(`${API_URL}/Login-System/login-Reporter.php`, { id: userId, password });
 
       if (response.data.status === "success") {
-        // เรียกใช้แอนิเมชันเมื่อเข้าสู่ระบบสำเร็
+
         setShowAlert(true);
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -49,11 +48,11 @@ const LoginScreen = ({ navigation }) => {
 
         setUserId(response.data.id);
         setTimeout(() => {
-          navigation.replace("StudentList"); // ✅ เอาหน้าลงตรงนี้
+          navigation.replace("StudentList");
         }, 750);
       } else {
-        setModalMessage(response.data.message || "ID หรือ Password ไม่ถูกต้อง"); // แจ้งเตือนกรณีใส่ข้อมูลผิด
-        setModalVisible(true); // เปิด modal แสดงข้อมูลผิด
+        setModalMessage(response.data.message || "ID หรือ Password ไม่ถูกต้อง");
+        setModalVisible(true);
       }
     } catch (error) {
       console.error("Login Error:", error);
@@ -116,7 +115,7 @@ const LoginScreen = ({ navigation }) => {
                     <TouchableOpacity
                       style={styles.loginButton}
                       onPress={handleLogin}
-                      disabled={isButtonDisabled} // กดปุ่มได้หรือไม่
+                      disabled={isButtonDisabled} 
                     >
                       <Text style={styles.loginButtonText}>เข้าสู่ระบบ</Text>
                     </TouchableOpacity>
@@ -138,7 +137,7 @@ const LoginScreen = ({ navigation }) => {
               <Text style={styles.modalText}>{modalMessage}</Text>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => setModalVisible(false)} // ปิด modal
+                onPress={() => setModalVisible(false)} 
               >
                 <Text style={styles.closeButtonText}>ปิด</Text>
               </TouchableOpacity>
@@ -152,7 +151,7 @@ const LoginScreen = ({ navigation }) => {
                   style={[styles.successAlert, { opacity: fadeAnim }]}
                 >
                   <Image
-                    source={require("../../../assets/logo/correct.png")} // ใช้ภาพเครื่องหมายถูกสีเขียว
+                    source={require("../../../assets/logo/correct.png")} 
                     style={styles.successIcon}
                   />
                   <Text style={styles.successText}>เข้าสู่ระบบสำเร็จ</Text>
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     elevation: 15,
   },
   loginButton: {
-    backgroundColor: "#FFCC33", // สีน้ำเงิน
+    backgroundColor: "#FFCC33", 
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // พื้นหลังโปร่งใส
+    backgroundColor: "rgba(0, 0, 0, 0.5)", 
   },
   modalContent: {
     width: "80%",
@@ -252,13 +251,13 @@ const styles = StyleSheet.create({
   },
   successText: {
     fontFamily: 'Kanit-Bold',
-    fontSize: 24, // เพิ่มขนาดฟอนต์
-    color: "#4CAF50", // สีเขียว
+    fontSize: 24, 
+    color: "#4CAF50",
     textAlign: "center",
-    marginTop: 10, // เพิ่มระยะห่าง
+    marginTop: 10, 
   },
   successIcon: {
-    width: 200, // เพิ่มขนาดไอคอน
+    width: 200,
     height: 120,
     resizeMode: "contain",
   },
@@ -275,7 +274,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom: height * 0.05, // เพิ่ม padding ให้เลื่อนลงมาได้
+    paddingBottom: height * 0.05, 
   },
   logoContainer: {
     backgroundColor: "#FF99FF",
@@ -287,12 +286,12 @@ const styles = StyleSheet.create({
     
   },
   logo: {
-    width: width * 0.6,  // ทำให้ขนาดปรับตามหน้าจอ
+    width: width * 0.6,
     height: height * 0.15,
     resizeMode: "contain",
   },
   spacing: {
-    height: height * 0.05, // เพิ่มระยะห่างระหว่างกล่องที่หนึ่งกับกล่องที่สอง
+    height: height * 0.05,
   },
   header: {
     backgroundColor: "#FF33FF",
@@ -300,8 +299,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: height * 0.025,
-    borderTopLeftRadius: 20, // เพิ่มความมนด้านบนซ้าย
-    borderTopRightRadius: 20, // เพิ่มความมนด้านบนขวา
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   headerText: {
     fontFamily: 'Kanit-Bold',
