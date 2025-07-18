@@ -10,12 +10,12 @@ import { API_URL } from '@env';
 
 const { width, height } = Dimensions.get('window');
 
-const API_URL2 = `${API_URL}/save_student.php`; // ✅ เปลี่ยนเป็น IP ของเครื่อง XAMPP
+const API_URL2 = `${API_URL}/save_student.php`;
 
 const submitStudentData = async (id, type, level, detail, time, reporter) => {
   try {
     const response = await axios.post(API_URL2, {
-      studentId: id, // ✅ เปลี่ยน id เป็น studentId
+      studentId: id,
       type,
       level,
       detail,
@@ -38,19 +38,19 @@ const StudentForm = () => {
   const [level, setLevel] = useState("");
   const handleLevelPress = (selectedLevel) => {
     if (level === selectedLevel) {
-      setLevel(""); // ถ้ากดปุ่มเดิม จะให้สามารถรีเซ็ตค่า (ไม่เลือก)
+      setLevel("");
     } else {
-      setLevel(selectedLevel); // ถ้าเลือกปุ่มใหม่ จะอัปเดตค่าระดับที่เลือก
+      setLevel(selectedLevel);
     }
   };
   const [detail, setDetail] = useState("");
 
-  const { studentId } = useStudent(); // ✅ ดึงค่า studentId จาก Context
-  const { userId } = useUser(); // ✅ ดึงค่า userId จาก Context
-  const navigation = useNavigation(); // ใช้ navigation
-  const [showAlert, setShowAlert] = useState(false); // สถานะการแสดง Alert
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // สถานะของปุ่ม Login
-  const fadeAnim = useState(new Animated.Value(0))[0]; // สำหรับแอนิเมชัน
+  const { studentId } = useStudent();
+  const { userId } = useUser();
+  const navigation = useNavigation();
+  const [showAlert, setShowAlert] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const fadeAnim = useState(new Animated.Value(0))[0];
   
 
 
@@ -83,8 +83,8 @@ const StudentForm = () => {
 
       
         setTimeout(() => {
-          navigation.replace("StudentList"); // ไปยังหน้า StudentList
-        }, 1000); // 750ms cooldown before navigation
+          navigation.replace("StudentList");
+        }, 1000);
       }
   };
 
