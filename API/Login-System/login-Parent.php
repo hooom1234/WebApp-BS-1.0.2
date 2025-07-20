@@ -31,6 +31,29 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $_SESSION["parent_id"] = $parent_id; // เก็บ parent_id ใน session
+
+    // Session Saving System
+
+    $logInf = fopen("../../log.num", "w"); // creates a file
+    fwrite($logInf, $admin_id);
+    fclose($logInf);
+    /*$logInf = fopen("../../log.hs", "w"); // hashes the file
+    fwrite($logInf, hash("sha256", $admin_id));
+    fclose($logInf);*/
+    $logInf = fopen("../../log.typ", "w"); // creates another file, user type
+    fwrite($logInf, "p");
+    fclose($logInf);
+    /*$logInf = fopen("../../log.hst", "w"); // hashes the file
+    fwrite($logInf, hash("sha256", $admin_id));
+    fclose($logInf);*/
+    $logInf = fopen("../../log.tim", "w"); // creates a timestamp
+    fwrite($logInf, time());
+    fclose($logInf);
+    $logInf = fopen("../../log.key", "w"); // creates a thing
+    fwrite($logInf, $admin_password);
+    fclose($logInf);
+
+    
     echo json_encode(["status" => "success", "message" => "Login Success", "id" => $parent_id]);
 } else {
     echo json_encode(["status" => "error", "message" => "Invalid ID or Password"]);

@@ -4,7 +4,8 @@ import ReporterButton from "./button/reporter-Button";
 import ParentButton from "./button/parent-Button";
 import AdminButton from "./button/admin-Button";
 
-import { useNavigation } from '@react-navigation/native';
+import RNFS from "react-native-fs";
+import axios from "axios";
 
 
 // ดึงขนาดหน้าจอ
@@ -87,5 +88,30 @@ const styles = StyleSheet.create({
     paddingVertical: height * 0.05, 
   },
 });
+
+//Session Checker
+
+const path = RNFS.DocumentDirectoryPath + '../../../';
+
+RNFS.readFile(path + 'log.tim', 'utf8')
+  .then(data => {
+    if (Math.floor(Date.now/1000) - +data > 1296000){ // user logged over 15 days ago
+      RNFS.unlink(path + 'log.tim').then().catch(err => console.log(err.message));
+      RNFS.unlink(path + 'log.typ').then().catch(err => console.log(err.message));
+      RNFS.unlink(path + 'log.num').then().catch(err => console.log(err.message));
+      RNFS.unlink(path + 'log.key').then().catch(err => console.log(err.message));
+      // removes files
+      return;
+    } else{ // user log is valid, restores session
+      const id = 0, key = 0;
+      RNFS.readFile(path + 'log.num').then(data => id  = data).catch(err => console.log(err.message));
+      RNFS.readFile(path + 'log.key').then(data => key = data).catch(err => console.log(err.message));
+      RNFS.readFile(path + 'log.typ').then(data => {
+        if (data == 'a') axios.post("${API_URL}Login-System/login-Admin.php", { id: id, etc });
+        if (data == 'p') axios.post("${API_URL}Login-System/login-Parent.php", { id: id, etc });
+        if (data == 'r') axios.post("${API_URL}Login-System/login-Reporter.php", { id: id, etc });
+      }).catch(err => console.log(err.message));
+    }
+  }).catch(err => console.log(err.message));
 
 export default HomeScreen;
